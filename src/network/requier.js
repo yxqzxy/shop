@@ -10,6 +10,7 @@ const instance = axios.create({
 // 2.1.请求拦截的作用
 instance.interceptors.request.use(config => {
   console.log(config)
+  config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 }, err => {
   // console.log(err);
@@ -17,7 +18,6 @@ instance.interceptors.request.use(config => {
 
 // 2.2.响应拦截
 instance.interceptors.response.use(res => {
-  console.log(res)
   return res.data
 }, err => {
   console.log(err);
