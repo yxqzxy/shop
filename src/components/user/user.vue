@@ -27,8 +27,8 @@
         <el-col :span="4">
           <!-- type的值是背景颜色 -->
           <el-button type="primary" @click="addDialogVisible = true">
-            添加用户</el-button
-          >
+            添加用户
+          </el-button>
         </el-col>
       </el-row>
 
@@ -65,6 +65,7 @@
               @click="removeUser(scope.row.id)"
             ></el-button>
             <!-- 分配角色 -->
+            <!-- 鼠标放在上面有提示组件 -->
             <el-tooltip
               effect="dark"
               content="角色分配"
@@ -75,6 +76,7 @@
                 type="warning"
                 size="mini"
                 icon="el-icon-star-off"
+                @click="showRolesuser(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -153,6 +155,35 @@
           <el-button type="primary" @click="editUserFrom">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 角色分配对话框-->
+
+      <el-dialog title="提示" :visible.sync="setRolesDialogVisible" width="50%">
+        <div>
+          <h6>角色名字：{{ rolesUserInfo.username }}</h6>
+          <h6>角色名称：{{ rolesUserInfo.role_name }}</h6>
+          <h6>
+            角色列表选项：
+            <el-select v-model="selectUserID" placeholder="请选择">
+              <el-option
+                v-for="item in selectUserList"
+                :key="item.id"
+                :label="item.roleName"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </h6>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="saveUserInfo(rolesUserInfo.id, selectUserID)"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
     </el-card>
   </div>
   <!-- 搜索框 -->
@@ -166,6 +197,8 @@ import {
   getUerId,
   editUserInfo,
   deleteUerId,
+  getRoles,
+  pushRolesUser,
 } from '../../network/home'
 export default {
   data() {
@@ -239,6 +272,14 @@ export default {
       eidtFrom: {},
       //保存一下用户ID
       userId: '',
+
+      //角色分配显示
+      setRolesDialogVisible: false,
+      // 点击分配角色后保存当前的用户信息
+      rolesUserInfo: {},
+      // 下拉菜单角色列表
+      selectUserList: {},
+      selectUserID: '',
     }
   },
   created() {
@@ -351,6 +392,35 @@ export default {
             message: '已取消删除',
           })
         })
+    },
+    showRolesuser(userInfo) {
+      this.selectUserList = {}
+      this.setRolesDialogVisible = true
+      // 获取角色列表的请求函数
+      getRoles().then((res) => {
+        if (res.meta.status != 200) {
+          this.$message.error('所有角色获取失败')
+        }
+        this.selectUserList = res.data
+        console.log(res.data)
+      })
+
+      this.rolesUserInfo = userInfo
+    },
+    saveUserInfo(userId, selectId) {
+      pushRolesUser(userId, selectId).then((res) => {
+        console.log(res)
+        if (res.meta.status != 200) {
+          this.$message.error('角色信息修改失败')
+        } else {
+          this.$message.success('角色信息修改成功')
+        }
+      })
+      // 接口有问题
+      this.getUserLists()
+      this.setRolesDialogVisible = false
+      this.rolesUserInfo = {}
+      this.selectUserID = ''
     },
   },
 }
