@@ -5,6 +5,7 @@ import Home from './components/Home.vue'
 import Welcome from './components/welcome.vue'
 import Rights from './components/power/rights.vue'
 import Roles from './components/power/Roles.vue'
+import Goods from './components/goods/goods_cate.vue'
 
 // 用户列表组件
 import User from './components/user/user.vue'
@@ -38,6 +39,9 @@ const routes = [{
   }, {
     path: '/roles',
     component: Roles
+  }, {
+    path: '/goods',
+    component: Goods
   }]
 }]
 

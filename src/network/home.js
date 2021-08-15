@@ -155,3 +155,27 @@ export function pushRolesUser(rolesID, rid) {
     }
   })
 }
+// 获取全部的商品列表
+export function getGoodsCateList(type, pagenum, pagesize) {
+  return request({
+    url: "goods",
+    method: "get",
+    params: {
+      type, pagenum, pagesize
+    }
+  })
+}
+// 添加分类
+export function addCategories(cat_pid, cat_name, cat_level) {
+  return request({
+    url: "categories",
+    methods: 'post',
+    data() {
+      return {
+        cat_pid,
+        cat_name,
+        cat_level
+      }
+    }
+  })
+}
